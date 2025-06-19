@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Добре дошли в AI Лабораторията</h1>
+    <p class="lead text-center">Тук можете да качвате ваши данни, да обучавате AI модели и да визуализирате резултатите.</p>
+    {% if current_user.is_authenticated %}
+        <div class="text-center">
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Към таблото</a>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-success">Вход</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Регистрация</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

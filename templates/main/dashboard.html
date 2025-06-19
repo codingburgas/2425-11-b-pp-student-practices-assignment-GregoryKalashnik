@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+<div class="container mt-4">
+    <h2>Вашето табло</h2>
+ 
+    <h4 class="mt-4">Вашите качени данни</h4>
+    <a href="{{ url_for('main.upload') }}" class="btn btn-sm btn-success mb-2">Качи нов CSV</a>
+    {% if datasets %}
+        <ul class="list-group">
+        {% for ds in datasets %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ ds.filename }}
+<a href="{{ url_for('main.train', dataset_id=ds.id) }}" class="btn btn-primary btn-sm">Обучи модел</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нямате качени данни.</p>
+    {% endif %}
+ 
+    <h4 class="mt-5">Вашите обучени модели</h4>
+    {% if models %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Тип</th>
+                    <th>Точност</th>
+                    <th>MSE</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for model in models %}
+                <tr>
+                    <td>{{ model.model_type }}</td>
+                    <td>{{ model.accuracy if model.accuracy is not none else '-' }}</td>
+                    <td>{{ model.mse if model.mse is not none else '-' }}</td>
+                    <td>{{ model.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Нямате обучени модели.</p>
+    {% endif %}
+</div>
+{% endblock %}

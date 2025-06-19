@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+<div class="container mt-5">
+    <h2>Административен панел – Списък с потребители</h2>
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Потребителско име</th>
+                <th>Email</th>
+                <th>Роля</th>
+                <th>Регистрация</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.registered_on.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
