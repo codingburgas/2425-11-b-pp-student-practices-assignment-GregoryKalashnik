@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}My Grades{% endblock %}
+
+{% block page_title %}My Grades{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Overall Performance Card -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0">Overall Performance</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="py-3">
+                            <h2 class="text-primary mb-1">{{ "%.2f"|format(overall_gpa) }}</h2>
+                            <p class="text-muted mb-0">Overall GPA</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="py-3">
+                            <h2 class="text-success mb-1">{{ highest_grade }}%</h2>
+                            <p class="text-muted mb-0">Highest Grade</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="py-3">
+                            <h2 class="text-info mb-1">{{ total_assessments }}</h2>
+                            <p class="text-muted mb-0">Total Assessments</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grades by Subject -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0">Grades by Subject</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="subjectsAccordion">
+                    {% for subject in subjects %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ subject.id }}">
+                            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ subject.id }}" 
+                                    aria-expanded="{{ 'true' if loop.first else 'false' }}" 
+                                    aria-controls="collapse{{ subject.id }}">
+                                <div class="d-flex align-items-center justify-content-between w-100">
+                                    <span>{{ subject.name }}</span>
+                                    <span class="badge bg-primary ms-2">{{ "%.1f"|format(subject_averages[subject.id]) }}%</span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ subject.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" 
+                             aria-labelledby="heading{{ subject.id }}" data-bs-parent="#subjectsAccordion">
+                            <div class="accordion-body">
+                                <div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Assessment Type</th>
+                                                <th>Grade</th>
+                                                <th>Date</th>
+                                                <th>Comment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for grade in subject_grades[subject.id] %}
+                                            <tr>
+                                                <td><span class="badge bg-light text-dark">{{ grade.grade_type }}</span></td>
+                                                <td>{{ "%.1f"|format(grade.grade_value) }}%</td>
+                                                <td>{{ grade.date_added.strftime('%Y-%m-%d') }}</td>
+                                                <td>{{ grade.comment or '-' }}</td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="4" class="text-center">No grades available</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Distribution -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0">Grade Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="gradeDistributionChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Grade Distribution Chart
+    new Chart(document.getElementById('gradeDistributionChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ grade_ranges|tojson }},
+            datasets: [{
+                label: 'Number of Grades',
+                data: {{ grade_distribution|tojson }},
+                backgroundColor: 'rgba(78, 115, 223, 0.8)',
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

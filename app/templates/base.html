@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - School Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --nav-bg: #f8f9fa;
+            --nav-hover: #e9ecef;
+            --primary-color: #0ea5e9;
+            --text-color: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #f1f5f9;
+        }
+
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Modern Sidebar Styling */
+        .sidebar {
+            background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+            width: 280px;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-left: 0.75rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .logo {
+            opacity: 0;
+            width: 0;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            padding: 0.875rem 1rem;
+            margin: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white !important;
+        }
+
+        .nav-link.active {
+            background-color: white;
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link i {
+            font-size: 1.25rem;
+            min-width: 2rem;
+            transition: margin 0.3s ease;
+        }
+
+        .nav-link span {
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar.collapsed .nav-link {
+            padding: 0.875rem;
+            margin: 0.25rem;
+            justify-content: center;
+        }
+
+        .nav-section {
+            padding: 1rem 0;
+        }
+
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-section-title {
+            opacity: 0;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-sidebar:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 70px;
+        }
+
+        .navbar {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+        }
+
+        .navbar .dropdown-toggle::after {
+            display: none;
+        }
+
+        .badge {
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #0284c7;
+            border-color: #0284c7;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -280px;
+            }
+            
+            .sidebar.collapsed {
+                margin-left: 0;
+                width: 280px;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="toggle-sidebar" onclick="toggleSidebar()">
+                    <i class='bx bx-menu'></i>
+                </button>
+                <span class="logo">School Manager</span>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                {% if current_user.is_teacher() %}
+                <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+                    <i class='bx bxs-dashboard'></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('main.students') }}" class="nav-link {% if request.endpoint == 'main.students' %}active{% endif %}">
+                    <i class='bx bxs-graduation'></i>
+                    <span>Students</span>
+                </a>
+                <a href="{{ url_for('main.subjects') }}" class="nav-link {% if request.endpoint == 'main.subjects' %}active{% endif %}">
+                    <i class='bx bxs-book-alt'></i>
+                    <span>Subjects</span>
+                </a>
+                {% else %}
+                <a href="{{ url_for('main.student_dashboard') }}" class="nav-link {% if request.endpoint == 'main.student_dashboard' %}active{% endif %}">
+                    <i class='bx bxs-dashboard'></i>
+                    <span>Dashboard</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Academic</div>
+                {% if current_user.is_teacher() %}
+                <a href="{{ url_for('main.grades') }}" class="nav-link {% if request.endpoint == 'main.grades' %}active{% endif %}">
+                    <i class='bx bxs-medal'></i>
+                    <span>Grades</span>
+                </a>
+                <a href="{{ url_for('main.attendance') }}" class="nav-link {% if request.endpoint == 'main.attendance' %}active{% endif %}">
+                    <i class='bx bxs-calendar-check'></i>
+                    <span>Attendance</span>
+                </a>
+                <a href="{{ url_for('main.reports') }}" class="nav-link {% if request.endpoint == 'main.reports' %}active{% endif %}">
+                    <i class='bx bxs-report'></i>
+                    <span>Reports</span>
+                </a>
+                {% else %}
+                <a href="{{ url_for('main.student_grades') }}" class="nav-link {% if request.endpoint == 'main.student_grades' %}active{% endif %}">
+                    <i class='bx bxs-medal'></i>
+                    <span>My Grades</span>
+                </a>
+                <a href="{{ url_for('main.student_attendance') }}" class="nav-link {% if request.endpoint == 'main.student_attendance' %}active{% endif %}">
+                    <i class='bx bxs-calendar-check'></i>
+                    <span>My Attendance</span>
+                </a>
+                <a href="{{ url_for('main.student_reports') }}" class="nav-link {% if request.endpoint == 'main.student_reports' %}active{% endif %}">
+                    <i class='bx bxs-report'></i>
+                    <span>Reports</span>
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand">
+                <div class="container-fluid px-0">
+                    <div class="navbar-text">
+                        <h4 class="mb-0">{% block page_title %}{% endblock %}</h4>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class='bx bxs-user-circle me-1'></i>
+                                {{ current_user.first_name }} {{ current_user.last_name }}
+                                <span class="badge bg-primary ms-2">{{ current_user.role|title }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">
+                                    <i class='bx bxs-user me-2'></i>Profile
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.settings') }}">
+                                    <i class='bx bxs-cog me-2'></i>Settings
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <i class='bx bx-log-out me-2'></i>Logout
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Page Content -->
+            <div class="container-fluid p-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Auth Pages -->
+    <div class="auth-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block auth_content %}{% endblock %}
+    </div>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Save preference
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+
+        // Restore sidebar state
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

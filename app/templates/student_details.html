@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}{{ student.first_name }} {{ student.last_name }} - Details{% endblock %}
+{% block page_title %}Student Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Student Info Card -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Student Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class='bx bxs-user-circle' style="font-size: 6rem; color: var(--primary-color)"></i>
+                </div>
+                <div class="mb-3">
+                    <h4>{{ student.first_name }} {{ student.last_name }}</h4>
+                    <p class="text-muted">Class Year: {{ student.class_year }}</p>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-1">Average Grade</h6>
+                            <h4 id="averageGrade">Calculating...</h4>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-1">Absences</h6>
+                            <h4 id="totalAbsences">Calculating...</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grades Chart -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Grade Progress</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="gradeChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Grades Table -->
+    <div class="col-xl-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Grades</h6>
+                <button class="btn btn-primary btn-sm" onclick="addGrade()">
+                    <i class="bx bx-plus"></i> Add Grade
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="gradesTable">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Absences Table -->
+    <div class="col-xl-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Absences</h6>
+                <button class="btn btn-primary btn-sm" onclick="addAbsence()">
+                    <i class="bx bx-plus"></i> Add Absence
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="absencesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const studentId = {{ student.id }};
+
+// Fetch and display grades
+async function loadGrades() {
+    const response = await fetch(`/api/grades/${studentId}`);
+    const grades = await response.json();
+    
+    const tbody = document.querySelector('#gradesTable tbody');
+    tbody.innerHTML = grades.map(grade => `
+        <tr>
+            <td>${grade.subject}</td>
+            <td>${grade.value}</td>
+            <td>${grade.date}</td>
+        </tr>
+    `).join('');
+    
+    // Update average grade
+    const average = grades.reduce((sum, grade) => sum + grade.value, 0) / grades.length;
+    document.getElementById('averageGrade').textContent = average.toFixed(2);
+    
+    // Update chart
+    updateGradeChart(grades);
+}
+
+// Fetch and display absences
+async function loadAbsences() {
+    const response = await fetch(`/api/absences/${studentId}`);
+    const absences = await response.json();
+    
+    const tbody = document.querySelector('#absencesTable tbody');
+    tbody.innerHTML = absences.map(absence => `
+        <tr>
+            <td>${absence.date}</td>
+            <td>${absence.subject}</td>
+            <td>${absence.excused ? 'Excused' : 'Unexcused'}</td>
+        </tr>
+    `).join('');
+    
+    document.getElementById('totalAbsences').textContent = absences.length;
+}
+
+// Initialize grade chart
+function updateGradeChart(grades) {
+    const ctx = document.getElementById('gradeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: grades.map(g => g.date),
+            datasets: [{
+                label: 'Grades',
+                data: grades.map(g => g.value),
+                borderColor: '#4e73df',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 6
+                }
+            }
+        }
+    });
+}
+
+// Load data when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadGrades();
+    loadAbsences();
+});
+</script>
+{% endblock %}

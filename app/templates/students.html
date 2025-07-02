@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Students{% endblock %}
+
+{% block page_title %}Students{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Quick Stats -->
+    <div class="col-12">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class='bx bxs-user-detail fs-1 text-primary'></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Total Students</h6>
+                                <h3 class="mb-0">{{ students|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class='bx bxs-graduation fs-1 text-success'></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Average Grade</h6>
+                                <h3 class="mb-0">85%</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class='bx bxs-calendar-check fs-1 text-warning'></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Attendance Rate</h6>
+                                <h3 class="mb-0">92%</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student List -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="mb-0">Student List</h5>
+                    </div>
+                    <div class="col text-end">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                            <i class='bx bx-plus me-2'></i>Add Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class Year</th>
+                                <th>Average Grade</th>
+                                <th>Attendance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-light rounded-circle me-2">
+                                            <span class="avatar-title text-primary">
+                                                {{ student.user.first_name[0] }}{{ student.user.last_name[0] }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                                            <small class="text-muted">{{ student.user.email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ student.class_year }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1" style="height: 5px;">
+                                            <div class="progress-bar" role="progressbar" style="width: 85%"></div>
+                                        </div>
+                                        <span class="ms-2">85%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1" style="height: 5px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 92%"></div>
+                                        </div>
+                                        <span class="ms-2">92%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('main.student_profile', student_id=student.id) }}" class="btn btn-sm btn-light">
+                                            <i class='bx bx-show'></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-light" onclick="editStudent({{ student.id }})">
+                                            <i class='bx bx-edit'></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light text-danger" onclick="deleteStudent({{ student.id }})">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" name="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Class Year</label>
+                        <input type="number" class="form-control" name="class_year" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveStudent()">Add Student</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function editStudent(id) {
+    // Implement edit functionality
+}
+
+function deleteStudent(id) {
+    if (confirm('Are you sure you want to delete this student?')) {
+        // Implement delete functionality
+    }
+}
+
+function saveStudent() {
+    // Implement save functionality
+    const form = document.getElementById('addStudentForm');
+    // Add form submission logic here
+}
+</script>
+{% endblock %}

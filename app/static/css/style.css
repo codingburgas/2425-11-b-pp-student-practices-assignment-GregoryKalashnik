@@ -1,0 +1,361 @@
+/* Root Variables */
+:root {
+    --primary-color: #4e73df;
+    --success-color: #1cc88a;
+    --info-color: #36b9cc;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --dark-color: #5a5c69;
+    --secondary-color: #858796;
+    --light-color: #f8f9fc;
+    --sidebar-width: 250px;
+}
+
+/* General Layout */
+body {
+    background-color: #f8f9fc;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Layout */
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+#sidebar {
+    width: var(--sidebar-width);
+    background: var(--primary-color);
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#sidebar ul li a {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+#sidebar ul li a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+#sidebar ul li a i {
+    margin-right: 10px;
+}
+
+.logout-section {
+    padding: 20px;
+}
+
+/* Main Content */
+#content {
+    width: calc(100% - var(--sidebar-width));
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* Cards */
+.card {
+    border: none;
+    margin-bottom: 24px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+.card-header {
+    border-bottom: 1px solid #e3e6f0;
+    background-color: #fff;
+}
+
+/* Stats Cards */
+.card-stats .icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+/* Tables */
+.table > :not(caption) > * > * {
+    padding: 1rem;
+}
+
+.table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    border-bottom-width: 1px;
+}
+
+/* Auth Pages */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f9fc;
+}
+
+.auth-wrapper .card {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Utilities */
+.avatar-sm {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -var(--sidebar-width);
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        width: 100%;
+    }
+    #content.active {
+        width: calc(100% - var(--sidebar-width));
+    }
+}
+
+/* Alert Styles */
+.alert {
+    border: none;
+    border-radius: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.alert-success {
+    color: #0f6848;
+    background-color: #d0f7e6;
+}
+
+.alert-danger {
+    color: #a42f1d;
+    background-color: #fde2dd;
+}
+
+.alert-warning {
+    color: #a47e1d;
+    background-color: #fdf1d9;
+}
+
+.alert-info {
+    color: #1f6e7d;
+    background-color: #daf1f5;
+}
+
+/* Quick Actions */
+.quick-action {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.quick-action:hover {
+    transform: translateY(-3px);
+}
+
+.quick-action i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Charts */
+canvas {
+    max-height: 300px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Dashboard Layout */
+#sidebar.active {
+    margin-left: 0;
+}
+
+#content.active {
+    margin-left: var(--sidebar-width);
+}
+
+/* Topbar */
+.topbar {
+    height: 4.375rem;
+    background-color: white;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.topbar .dropdown-toggle::after {
+    display: none;
+}
+
+.topbar-divider {
+    width: 0;
+    border-right: 1px solid #e3e6f0;
+    height: calc(4.375rem - 2rem);
+    margin: auto 1rem;
+}
+
+/* Utilities */
+.text-xs {
+    font-size: .7rem;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.border-left-primary {
+    border-left: 0.25rem solid var(--primary-color) !important;
+}
+
+.border-bottom-primary {
+    border-bottom: 0.25rem solid var(--primary-color) !important;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #224abe;
+    border-color: #224abe;
+}
+
+/* Table Styles */
+.table > tbody > tr:hover {
+    background-color: #f8f9fc;
+}
+
+/* Form Styles */
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > label {
+    padding: 1rem 0.75rem;
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Login/Register Card Styles */
+.auth-card {
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+/* Custom Utilities */
+.min-vh-100 {
+    min-height: 100vh !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Content Area */
+.content {
+    margin-left: var(--sidebar-width);
+    padding: 1.5rem;
+}
+
+/* Stats Cards */
+.stats-card {
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.stats-card.success {
+    border-left-color: var(--success-color);
+}
+
+.stats-card.warning {
+    border-left-color: var(--warning-color);
+}
+
+.stats-card.info {
+    border-left-color: var(--info-color);
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 300px;
+    width: 100%;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        z-index: 1030;
+        transition: 0.3s;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+}

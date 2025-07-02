@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+{% if current_user.is_teacher() %}
+<div class="row g-4">
+    <!-- Quick Stats -->
+    <div class="col-md-3">
+        <div class="card shadow-sm bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class='bx bxs-user-detail fs-1'></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1">Total Students</h6>
+                        <h3 class="mb-0">{{ total_students }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class='bx bxs-check-circle fs-1'></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1">Present Today</h6>
+                        <h3 class="mb-0">{{ present_today }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm bg-danger text-white h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class='bx bxs-x-circle fs-1'></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1">Absent Today</h6>
+                        <h3 class="mb-0">{{ absent_today }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm bg-warning text-white h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class='bx bxs-time fs-1'></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1">Late Today</h6>
+                        <h3 class="mb-0">{{ late_today }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Grades -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="mb-0">Recent Grades</h5>
+                    </div>
+                    <div class="col text-end">
+                        <a href="{{ url_for('main.grades') }}" class="btn btn-primary btn-sm">View All</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grade in recent_grades %}
+                            <tr>
+                                <td>{{ grade.student.full_name }}</td>
+                                <td>{{ grade.subject.name }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                            <div class="progress-bar {{ 'bg-success' if grade.grade_value >= 80 else 'bg-warning' if grade.grade_value >= 60 else 'bg-danger' }}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ grade.grade_value }}%"></div>
+                                        </div>
+                                        <span class="ms-2">{{ "%.1f"|format(grade.grade_value) }}%</span>
+                                    </div>
+                                </td>
+                                <td>{{ grade.date_added.strftime('%Y-%m-%d') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Attendance -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="mb-0">Today's Attendance</h5>
+                    </div>
+                    <div class="col text-end">
+                        <a href="{{ url_for('main.attendance') }}" class="btn btn-primary btn-sm">View All</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div style="height: 200px;">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+                <div class="row mt-4 text-center">
+                    <div class="col">
+                        <h6 class="text-success mb-1">Present</h6>
+                        <h4>{{ "%.1f"|format(present_rate) }}%</h4>
+                    </div>
+                    <div class="col">
+                        <h6 class="text-danger mb-1">Absent</h6>
+                        <h4>{{ "%.1f"|format(absent_rate) }}%</h4>
+                    </div>
+                    <div class="col">
+                        <h6 class="text-warning mb-1">Late</h6>
+                        <h4>{{ "%.1f"|format(late_rate) }}%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Overview -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="mb-0">Class Performance Overview</h5>
+                    </div>
+                    <div class="col text-end">
+                        <a href="{{ url_for('main.reports') }}" class="btn btn-primary btn-sm">View Full Report</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div style="height: 300px;">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Grade Distribution</h6>
+                                <div class="mt-4">
+                                    {% for range in grade_ranges %}
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>{{ range.label }}</span>
+                                            <span>{{ range.count }} students</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar {{ range.color }}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ (range.count / total_students * 100)|round }}%"></div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Attendance Chart
+    new Chart(document.getElementById('attendanceChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Present', 'Absent', 'Late'],
+            datasets: [{
+                data: [{{ present_today }}, {{ absent_today }}, {{ late_today }}],
+                backgroundColor: [
+                    'rgba(28, 200, 138, 0.8)',
+                    'rgba(231, 74, 59, 0.8)',
+                    'rgba(246, 194, 62, 0.8)'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            cutout: '75%'
+        }
+    });
+
+    // Performance Chart
+    new Chart(document.getElementById('performanceChart'), {
+        type: 'line',
+        data: {
+            labels: {{ performance_labels|tojson }},
+            datasets: [{
+                label: 'Average Grade',
+                data: {{ performance_data|tojson }},
+                borderColor: 'rgba(78, 115, 223, 1)',
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
