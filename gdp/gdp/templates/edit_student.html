@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #fef2f2;
+            color: #dc2626;
+            border-right: 3px solid #dc2626;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border-radius: 12px;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            color: #64748b;
+        }
+
+        .breadcrumb a {
+            color: #dc2626;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .edit-form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            max-width: 800px;
+        }
+
+        .student-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .student-avatar-large {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5em;
+        }
+
+        .student-info h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .student-info p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .flash-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .flash-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .flash-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .edit-form-card {
+                padding: 24px;
+            }
+
+            .student-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">Admin Panel</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Administration</div>
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('admin_students') }}" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Students
+                </a>
+                <a href="{{ url_for('admin_analytics') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('admin_settings') }}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Reports</div>
+                <a href="{{ url_for('admin_predictions') }}" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Predictions
+                </a>
+                <a href="{{ url_for('admin_export') }}" class="nav-item">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </a>
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-info">
+                    <h4>System Admin</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Edit Student</span>
+            </div>
+
+            <div class="header">
+                <h1>✏️ Edit Student</h1>
+                <p>Update student information and academic records</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Edit Form -->
+            <div class="edit-form-card">
+                <!-- Student Header -->
+                <div class="student-header">
+                    <div class="student-avatar-large">
+                        {% if student[4] and student[5] %}
+                            {{ student[4][0].upper() }}{{ student[5][0].upper() }}
+                        {% else %}
+                            <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
+                    <div class="student-info">
+                        <h2>{{ student[4] or 'Unknown' }} {{ student[5] or 'Student' }}</h2>
+                        <p>Student ID: {{ student[0] }} • Username: {{ student[1] }}</p>
+                    </div>
+                </div>
+
+                <form method="POST">
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" id="first_name" name="first_name" 
+                                       value="{{ student[4] or '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" 
+                                       value="{{ student[5] or '' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" 
+                                   value="{{ student[2] or '' }}" required>
+                        </div>
+                    </div>
+
+                    <!-- Academic Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Academic Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="gpa">Grade Point Average (GPA)</label>
+                                <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4" 
+                                       value="{{ "%.2f"|format(student[7]) if student[7] else '' }}" 
+                                       placeholder="e.g., 3.75">
+                            </div>
+                            <div class="form-group">
+                                <label for="test_score">Test Score (SAT/ACT)</label>
+                                <input type="number" id="test_score" name="test_score" min="0" max="1600" 
+                                       value="{{ student[8] if student[8] else '' }}" 
+                                       placeholder="e.g., 1350">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="entry_score">Entry Score (Admin Setting)</label>
+                            <input type="number" id="entry_score" name="entry_score" step="0.01" min="0" max="100" 
+                                   value="{{ "%.2f"|format(student[9]) if student[9] else '' }}" 
+                                   placeholder="e.g., 85.50">
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

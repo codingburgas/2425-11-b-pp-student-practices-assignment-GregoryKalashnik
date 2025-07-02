@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AdmissionAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Same as other pages */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #f8fafc;
+            color: #4ade80;
+            border-right: 3px solid #4ade80;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .user-info p {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .card-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4ade80;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+        }
+
+        .form-actions {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            box-shadow: 0 2px 8px rgba(74, 222, 128, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.35);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+            border-color: #f87171;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .setting-info p {
+            font-size: 0.85em;
+            color: #64748b;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e2e8f0;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4ade80;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .danger-zone {
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+        }
+
+        .danger-zone .card-header {
+            border-bottom-color: #fecaca;
+        }
+
+        .danger-zone .card-header h2 {
+            color: #dc2626;
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">AdmissionAI</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Main</div>
+                <a href="{{ url_for('student_dashboard') }}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('analytics') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Account</div>
+                <a href="{{ url_for('profile') }}" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {% if user[4] and user[5] %}
+                        {{ user[4][0].upper() }}{{ user[5][0].upper() }}
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <div class="user-info">
+                    <h4>{{ user[4] }} {{ user[5] }}</h4>
+                    <p>{{ user[6].title() if user[6] else 'Student' }}</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>⚙️ Account Settings</h1>
+                <p>Manage your account preferences and personal information</p>
+            </div>
+
+            <div class="alert success" id="successAlert">
+                <i class="fas fa-check-circle"></i> Settings updated successfully!
+            </div>
+
+            <div class="alert error" id="errorAlert">
+                <i class="fas fa-exclamation-circle"></i> Error updating settings. Please try again.
+            </div>
+
+            <div class="settings-grid">
+                <!-- Profile Information -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-user-circle"></i> Profile Information</h2>
+                        <p>Update your personal details and account information</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('update_profile') }}">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" id="first_name" name="first_name" value="{{ user[4] if user[4] else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" value="{{ user[5] if user[5] else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" value="{{ user[2] if user[2] else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" value="{{ user[1] if user[1] else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Profile
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Academic Information -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-graduation-cap"></i> Academic Information</h2>
+                        <p>Update your GPA and test scores for more accurate predictions</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('update_academic') }}">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="gpa">Current GPA</label>
+                                <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4.0" 
+                                       value="{{ user[7] if user[7] else '' }}" placeholder="e.g., 3.75">
+                            </div>
+                            <div class="form-group">
+                                <label for="test_score">Test Score (SAT/ACT)</label>
+                                <input type="number" id="test_score" name="test_score" min="200" max="1600" 
+                                       value="{{ user[8] if user[8] else '' }}" placeholder="e.g., 1350">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Academic Info
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Notification Preferences -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-bell"></i> Notification Preferences</h2>
+                        <p>Choose how you want to receive updates and alerts</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Email Notifications</h4>
+                            <p>Receive prediction results and updates via email</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Weekly Reports</h4>
+                            <p>Get weekly summaries of your prediction activity</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="weeklyReports" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Improvement Suggestions</h4>
+                            <p>Receive personalized tips to improve your admission chances</p>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="improvementTips" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" onclick="saveNotificationSettings()">
+                            <i class="fas fa-save"></i> Save Preferences
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Privacy & Security -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
+                        <p>Manage your account security and privacy settings</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('change_password') }}">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="current_password">Current Password</label>
+                                <input type="password" id="current_password" name="current_password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password">New Password</label>
+                                <input type="password" id="new_password" name="new_password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-card danger-zone">
+                    <div class="card-header">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Danger Zone</h2>
+                        <p>Irreversible actions that will permanently affect your account</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Clear Prediction History</h4>
+                            <p>Permanently delete all your prediction records and analytics data</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="confirmClearHistory()">
+                            <i class="fas fa-trash"></i> Clear History
+                        </button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Delete Account</h4>
+                            <p>Permanently delete your account and all associated data</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="confirmDeleteAccount()">
+                            <i class="fas fa-user-times"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function saveNotificationSettings() {
+            const emailNotifications = document.getElementById('emailNotifications').checked;
+            const weeklyReports = document.getElementById('weeklyReports').checked;
+            const improvementTips = document.getElementById('improvementTips').checked;
+
+            // Here you would normally send the data to the server
+            showAlert('success', 'Notification preferences saved successfully!');
+        }
+
+        function confirmClearHistory() {
+            if (confirm('Are you sure you want to clear all prediction history? This action cannot be undone.')) {
+                // Send request to clear history
+                fetch('/clear_history', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAlert('success', 'Prediction history cleared successfully!');
+                        } else {
+                            showAlert('error', 'Error clearing history. Please try again.');
+                        }
+                    });
+            }
+        }
+
+        function confirmDeleteAccount() {
+            const confirmation = prompt('This will permanently delete your account. Type "DELETE" to confirm:');
+            if (confirmation === 'DELETE') {
+                // Send request to delete account
+                if (confirm('Are you absolutely sure? This action cannot be undone.')) {
+                    window.location.href = '/delete_account';
+                }
+            }
+        }
+
+        function showAlert(type, message) {
+            const alert = document.getElementById(type + 'Alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show alerts based on URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success')) {
+            showAlert('success', 'Settings updated successfully!');
+        }
+        if (urlParams.get('error')) {
+            showAlert('error', 'Error updating settings. Please try again.');
+        }
+    </script>
+</body>
+</html> 

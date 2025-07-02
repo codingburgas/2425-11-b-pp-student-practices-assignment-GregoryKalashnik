@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - AdmissionAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #f8fafc;
+            color: #4ade80;
+            border-right: 3px solid #4ade80;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .user-info p {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-title {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .stat-icon.gpa { background: linear-gradient(135deg, #4ade80, #22c55e); }
+        .stat-icon.test { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .stat-icon.chance { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+        .stat-icon.predictions { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive { color: #16a34a; }
+        .stat-change.neutral { color: #64748b; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+        }
+
+        .prediction-tool {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .tool-header {
+            margin-bottom: 24px;
+        }
+
+        .tool-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .tool-header p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4ade80;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+        }
+
+        .predict-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+        }
+
+        .prediction-result {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #4ade80;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .result-icon {
+            width: 32px;
+            height: 32px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .result-title {
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .result-percentage {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #4ade80;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .sidebar-content h3 {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 16px;
+        }
+
+        .prediction-history {
+            space-y: 16px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .history-info h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .history-info p {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+
+        .history-percentage {
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .history-percentage.high { color: #16a34a; }
+        .history-percentage.medium { color: #d97706; }
+        .history-percentage.low { color: #dc2626; }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        /* Loading and result states */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #4ade80;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">AdmissionAI</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Main</div>
+                <a href="{{ url_for('student_dashboard') }}" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('analytics') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Account</div>
+                <a href="{{ url_for('profile') }}" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {% if user[4] and user[5] %}
+                        {{ user[4][0].upper() }}{{ user[5][0].upper() }}
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <div class="user-info">
+                    <h4>{{ user[4] }} {{ user[5] }}</h4>
+                    <p>{{ user[6].title() if user[6] else 'Student' }}</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Good Morning, {{ user[4] }}!</h1>
+                <p>Track your academic progress and predict your admission chances</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Current GPA</div>
+                        <div class="stat-icon gpa">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ "%.2f"|format(user[7] if user[7] else 0.0) }}</div>
+                    <div class="stat-change neutral">Last updated score</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Test Score</div>
+                        <div class="stat-icon test">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ user[8] if user[8] else 0 }}</div>
+                    <div class="stat-change neutral">Latest attempt</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Admission Chance</div>
+                        <div class="stat-icon chance">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{% if user[7] and user[8] %}85%{% else %}-%{% endif %}</div>
+                    <div class="stat-change positive">{% if user[7] and user[8] %}Strong potential{% else %}Run prediction{% endif %}</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Predictions Made</div>
+                        <div class="stat-icon predictions">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ predictions|length }}</div>
+                    <div class="stat-change neutral">Total predictions</div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Prediction Tool -->
+                <div class="prediction-tool">
+                    <div class="tool-header">
+                        <h2>🎯 Admission Predictor</h2>
+                        <p>Enter your academic details to get AI-powered admission predictions</p>
+                    </div>
+
+                    <form id="predictionForm">
+                        <div class="form-group">
+                            <label for="gpa">📊 Grade Point Average (GPA)</label>
+                            <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4" 
+                                   placeholder="e.g., 3.75" value="{{ "%.2f"|format(user[7]) if user[7] else '' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="testScore">🎯 Standardized Test Score</label>
+                            <input type="number" id="testScore" name="testScore" min="200" max="1600" 
+                                   placeholder="e.g., 1350" value="{{ user[8] if user[8] else '' }}">
+                        </div>
+
+                        <button type="submit" class="predict-btn">
+                            <i class="fas fa-rocket"></i> Predict My Chances
+                        </button>
+                    </form>
+
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing your profile...</p>
+                    </div>
+
+                    <div class="prediction-result" id="predictionResult">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="result-title">Prediction Result</div>
+                        </div>
+                        <div class="result-percentage" id="resultPercentage">85%</div>
+                        <div id="resultMessage">Great! You have a good chance of admission!</div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Content -->
+                <div class="sidebar-content">
+                    <h3>📈 Recent Predictions</h3>
+                    <div class="prediction-history">
+                        {% if predictions %}
+                            {% for prediction in predictions %}
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <h4>GPA: {{ "%.2f"|format(prediction[2]) }} | Score: {{ prediction[3] }}</h4>
+                                    <p>{{ prediction[7][:19] if prediction[7] else 'Recently' }}</p>
+                                </div>
+                                <div class="history-percentage {% if prediction[5] >= 70 %}high{% elif prediction[5] >= 40 %}medium{% else %}low{% endif %}">
+                                    {{ "%.1f"|format(prediction[5]) }}%
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <h4>No predictions yet</h4>
+                                    <p>Run your first prediction to see results here</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const gpa = parseFloat(document.getElementById('gpa').value);
+            const testScore = parseFloat(document.getElementById('testScore').value);
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('predictionResult').style.display = 'none';
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        gpa: gpa,
+                        testScore: testScore
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('resultPercentage').textContent = data.probability + '%';
+                    document.getElementById('resultMessage').textContent = data.message;
+                    document.getElementById('predictionResult').style.display = 'block';
+                    
+                    // Refresh page to update stats
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    // Show user-friendly error message from server
+                    document.getElementById('resultPercentage').textContent = '❌';
+                    document.getElementById('resultMessage').textContent = data.error || 'Please check your input and try again.';
+                    document.getElementById('predictionResult').style.display = 'block';
+                }
+            } catch (error) {
+                // Show user-friendly network error
+                document.getElementById('resultPercentage').textContent = '⚠️';
+                document.getElementById('resultMessage').textContent = 'Unable to connect to the server. Please check your internet connection and try again.';
+                document.getElementById('predictionResult').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AdmissionAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #fef2f2;
+            color: #dc2626;
+            border-right: 3px solid #dc2626;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border-radius: 12px;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-title {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .stat-icon.students { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .stat-icon.predictions { background: linear-gradient(135deg, #4ade80, #22c55e); }
+        .stat-icon.gpa { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+        .stat-icon.active { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-top: 8px;
+            color: #64748b;
+        }
+
+        .students-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .table-header {
+            padding: 24px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fafbfc;
+        }
+
+        .table-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .table-header p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #fafbfc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 0.9em;
+            color: #1a202c;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8em;
+        }
+
+        .student-details h4 {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .student-details p {
+            color: #64748b;
+            font-size: 0.8em;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2563eb;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .gpa-score {
+            font-weight: 600;
+        }
+
+        .gpa-excellent { color: #16a34a; }
+        .gpa-good { color: #4ade80; }
+        .gpa-average { color: #f59e0b; }
+        .gpa-poor { color: #dc2626; }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">Admin Panel</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Administration</div>
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('admin_students') }}" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Students
+                </a>
+                <a href="{{ url_for('admin_analytics') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('admin_settings') }}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Reports</div>
+                <a href="{{ url_for('admin_predictions') }}" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Predictions
+                </a>
+                <a href="{{ url_for('admin_export') }}" class="nav-item">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </a>
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-info">
+                    <h4>System Admin</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <p>Manage students, view analytics, and configure system settings</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Total Students</div>
+                        <div class="stat-icon students">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ stats.total_students }}</div>
+                    <div class="stat-change">Registered users</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Total Predictions</div>
+                        <div class="stat-icon predictions">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ stats.total_predictions }}</div>
+                    <div class="stat-change">All time predictions</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Average GPA</div>
+                        <div class="stat-icon gpa">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ stats.avg_gpa }}</div>
+                    <div class="stat-change">Student average</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Active Today</div>
+                        <div class="stat-icon active">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ (stats.total_students * 0.3)|int }}</div>
+                    <div class="stat-change">Recent activity</div>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="students-table">
+                <div class="table-header">
+                    <h2>👥 Student Management</h2>
+                    <p>View, edit, and manage all registered students</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>GPA</th>
+                                <th>Test Score</th>
+                                <th>Entry Score</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>
+                                    <div class="student-info">
+                                        <div class="student-avatar">
+                                            {{ student[2][0] }}{{ student[3][0] }}
+                                        </div>
+                                        <div class="student-details">
+                                            <h4>{{ student[2] }} {{ student[3] }}</h4>
+                                            <p>Student ID: {{ student[0] }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ student[1] }}</td>
+                                <td>{{ student[4] }}</td>
+                                <td>
+                                    <span class="gpa-score {% if student[5] >= 3.5 %}gpa-excellent{% elif student[5] >= 3.0 %}gpa-good{% elif student[5] >= 2.5 %}gpa-average{% else %}gpa-poor{% endif %}">
+                                        {{ "%.2f"|format(student[5]) if student[5] else "0.00" }}
+                                    </span>
+                                </td>
+                                <td>{{ student[6] if student[6] else "-" }}</td>
+                                <td>{{ "%.2f"|format(student[7]) if student[7] else "0.00" }}</td>
+                                <td>{{ student[8][:10] if student[8] else "-" }}</td>
+                                <td>
+                                    <span class="status-badge status-active">Active</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ url_for('edit_student', student_id=student[0]) }}" class="btn btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <form style="display: inline;" method="post" action="{{ url_for('delete_student', student_id=student[0]) }}" 
+                                              onsubmit="return confirm('Are you sure you want to delete this student?')">
+                                            <button type="submit" class="btn btn-delete">
+                                                <i class="fas fa-trash"></i>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

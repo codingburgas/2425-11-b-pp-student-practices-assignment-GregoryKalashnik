@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #fef2f2;
+            color: #dc2626;
+            border-right: 3px solid #dc2626;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border-radius: 12px;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            margin-bottom: 24px;
+        }
+
+        .settings-card h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-card p {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+            color: #b91c1c;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item h4 {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .setting-item p {
+            color: #64748b;
+            font-size: 0.85em;
+            margin: 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .toggle-switch.active {
+            background: #dc2626;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">Admin Panel</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Administration</div>
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('admin_students') }}" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Students
+                </a>
+                <a href="{{ url_for('admin_analytics') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('admin_settings') }}" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Reports</div>
+                <a href="{{ url_for('admin_predictions') }}" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Predictions
+                </a>
+                <a href="{{ url_for('admin_export') }}" class="nav-item">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </a>
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-info">
+                    <h4>System Admin</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>⚙️ System Settings</h1>
+                <p>Configure system preferences and manage admin account</p>
+            </div>
+
+            <!-- System Configuration -->
+            <div class="settings-card">
+                <h2><i class="fas fa-server"></i> System Configuration</h2>
+                <p>Configure general system settings and preferences</p>
+                
+                <div style="text-align: center; padding: 32px; color: #64748b;">
+                    <i class="fas fa-tools" style="font-size: 2em; margin-bottom: 16px;"></i><br>
+                    Settings management coming soon<br>
+                    <small>Advanced system configuration will be available in the next update</small>
+                </div>
+            </div>
+
+            <!-- ML Model Settings -->
+            <div class="settings-card">
+                <h2><i class="fas fa-brain"></i> ML Model Information</h2>
+                <p>Current machine learning model configuration</p>
+                
+                <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #dc2626;">
+                    <h4 style="margin-bottom: 8px;">Current Model: Logistic Regression</h4>
+                    <p style="margin: 0; color: #64748b;">
+                        The system uses Logistic Regression with StandardScaler for feature normalization.
+                        The model is trained on 2000 synthetic samples with realistic GPA and test score distributions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Admin Account -->
+            <div class="settings-card">
+                <h2><i class="fas fa-user-shield"></i> Admin Account</h2>
+                <p>Your administrator account information</p>
+                
+                <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 4px;">Username</h4>
+                            <p style="margin: 0; color: #64748b;">admin</p>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 4px;">Role</h4>
+                            <p style="margin: 0; color: #64748b;">System Administrator</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="settings-card">
+                <h2><i class="fas fa-lightning-bolt"></i> Quick Actions</h2>
+                <p>Common administrative tasks and shortcuts</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <button class="btn btn-primary" onclick="alert('Feature coming soon!')">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                    <button class="btn btn-primary" onclick="alert('Feature coming soon!')">
+                        <i class="fas fa-chart-bar"></i>
+                        Generate Report
+                    </button>
+                    <button class="btn btn-primary" onclick="alert('Feature coming soon!')">
+                        <i class="fas fa-sync"></i>
+                        Refresh Statistics
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

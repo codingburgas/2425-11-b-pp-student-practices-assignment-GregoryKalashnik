@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #fef2f2;
+            color: #dc2626;
+            border-right: 3px solid #dc2626;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border-radius: 12px;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .chart-header {
+            margin-bottom: 24px;
+        }
+
+        .chart-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .chart-header p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .confidence-stats {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .confidence-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #fafbfc;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .confidence-item h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .confidence-count {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            text-align: center;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .metric-icon.total { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .metric-icon.predictions { background: linear-gradient(135deg, #4ade80, #22c55e); }
+        .metric-icon.average { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">Admin Panel</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Administration</div>
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('admin_students') }}" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Students
+                </a>
+                <a href="{{ url_for('admin_analytics') }}" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('admin_settings') }}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Reports</div>
+                <a href="{{ url_for('admin_predictions') }}" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Predictions
+                </a>
+                <a href="{{ url_for('admin_export') }}" class="nav-item">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </a>
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-info">
+                    <h4>System Admin</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>📊 System Analytics</h1>
+                <p>Comprehensive insights into platform performance and user behavior</p>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon total">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="metric-value">{{ data.total_students }}</div>
+                    <div class="metric-label">Total Students</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon predictions">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="metric-value">{{ data.total_predictions }}</div>
+                    <div class="metric-label">Total Predictions</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon average">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="metric-value">{{ data.avg_probability }}%</div>
+                    <div class="metric-label">Avg Probability</div>
+                </div>
+            </div>
+
+            <!-- Analytics Grid -->
+            <div class="analytics-grid">
+                <!-- Chart Section -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2>📈 Prediction Trends</h2>
+                        <p>Daily prediction volume over the last 30 days</p>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div style="text-align: center;">
+                            <i class="fas fa-chart-area" style="font-size: 2em; margin-bottom: 16px; color: #dc2626;"></i><br>
+                            Interactive charts coming soon<br>
+                            <small style="color: #94a3b8;">Time series of prediction activity</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confidence Stats -->
+                <div class="confidence-stats">
+                    <div class="chart-header">
+                        <h2>🎯 Confidence Levels</h2>
+                        <p>Distribution of prediction confidence</p>
+                    </div>
+
+                    {% if data.confidence_stats %}
+                        {% for stat in data.confidence_stats %}
+                        <div class="confidence-item">
+                            <h4>{{ stat[1] if stat[1] else 'Unknown' }}</h4>
+                            <div class="confidence-count">{{ stat[0] }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="text-align: center; padding: 32px; color: #64748b;">
+                            <i class="fas fa-chart-pie" style="font-size: 2em; margin-bottom: 16px;"></i><br>
+                            No prediction data yet
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2>⏰ Recent Activity</h2>
+                    <p>Latest prediction activity by date</p>
+                </div>
+                
+                {% if data.daily_predictions %}
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #fafbfc;">
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9;">Date</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9;">Predictions</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9;">Activity Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in data.daily_predictions[:10] %}
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #f8fafc;">{{ activity[0] }}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #f8fafc; font-weight: 600;">{{ activity[1] }}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #f8fafc;">
+                                        {% if activity[1] >= 10 %}
+                                            <span style="color: #16a34a; font-weight: 500;">High</span>
+                                        {% elif activity[1] >= 5 %}
+                                            <span style="color: #f59e0b; font-weight: 500;">Medium</span>
+                                        {% else %}
+                                            <span style="color: #64748b; font-weight: 500;">Low</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div style="text-align: center; padding: 32px; color: #64748b;">
+                        <i class="fas fa-calendar-alt" style="font-size: 2em; margin-bottom: 16px;"></i><br>
+                        No recent activity to display
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

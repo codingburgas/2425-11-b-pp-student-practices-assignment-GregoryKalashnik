@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - AdmissionAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Same as other pages */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #f8fafc;
+            color: #4ade80;
+            border-right: 3px solid #4ade80;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .user-info p {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .filter-header {
+            margin-bottom: 20px;
+        }
+
+        .filter-header h3 {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            background: white;
+            color: #1a202c;
+        }
+
+        .history-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .table-header {
+            padding: 24px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fafbfc;
+        }
+
+        .table-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .table-header p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #fafbfc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 0.9em;
+            color: #1a202c;
+        }
+
+        .probability-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .probability-high {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .probability-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .probability-low {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .confidence-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+
+        .confidence-very-high {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .confidence-high {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .confidence-moderate {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .confidence-low {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .gpa-score {
+            font-weight: 600;
+        }
+
+        .gpa-excellent { color: #16a34a; }
+        .gpa-good { color: #4ade80; }
+        .gpa-average { color: #f59e0b; }
+        .gpa-poor { color: #dc2626; }
+
+        .no-data {
+            text-align: center;
+            padding: 64px 32px;
+            color: #64748b;
+        }
+
+        .no-data i {
+            font-size: 3em;
+            margin-bottom: 16px;
+            color: #cbd5e1;
+        }
+
+        .no-data h3 {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            color: #1a202c;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">AdmissionAI</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Main</div>
+                <a href="{{ url_for('student_dashboard') }}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('analytics') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-item active">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Account</div>
+                <a href="{{ url_for('profile') }}" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {% if user[4] and user[5] %}
+                        {{ user[4][0].upper() }}{{ user[5][0].upper() }}
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <div class="user-info">
+                    <h4>{{ user[4] }} {{ user[5] }}</h4>
+                    <p>{{ user[6].title() if user[6] else 'Student' }}</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>📚 Prediction History</h1>
+                <p>Complete record of all your admission predictions and progress</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-section">
+                <div class="filter-header">
+                    <h3>🔍 Filter & Search</h3>
+                </div>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>Confidence Level</label>
+                        <select id="confidenceFilter">
+                            <option value="">All Levels</option>
+                            <option value="Very High">Very High</option>
+                            <option value="High">High</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Probability Range</label>
+                        <select id="probabilityFilter">
+                            <option value="">All Ranges</option>
+                            <option value="high">High (70-100%)</option>
+                            <option value="medium">Medium (40-69%)</option>
+                            <option value="low">Low (0-39%)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Date Range</label>
+                        <select id="dateFilter">
+                            <option value="">All Time</option>
+                            <option value="week">Last Week</option>
+                            <option value="month">Last Month</option>
+                            <option value="quarter">Last 3 Months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Table -->
+            <div class="history-table">
+                <div class="table-header">
+                    <h2>📊 Prediction Records</h2>
+                    <p>Detailed history of all your admission probability calculations</p>
+                </div>
+
+                {% if predictions %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>GPA</th>
+                                <th>Test Score</th>
+                                <th>Probability</th>
+                                <th>Confidence</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            {% for prediction in predictions %}
+                            <tr data-confidence="{{ prediction[6] }}" data-probability="{{ prediction[5] }}" data-date="{{ prediction[7] }}">
+                                <td>
+                                    <div>
+                                        <strong>{{ prediction[7][:10] if prediction[7] else 'Unknown' }}</strong><br>
+                                        <small style="color: #64748b;">{{ prediction[7][11:16] if prediction[7] and prediction[7]|length > 11 else '' }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="gpa-score {% if prediction[2] >= 3.5 %}gpa-excellent{% elif prediction[2] >= 3.0 %}gpa-good{% elif prediction[2] >= 2.5 %}gpa-average{% else %}gpa-poor{% endif %}">
+                                        {{ "%.2f"|format(prediction[2]) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong>{{ prediction[3] }}</strong>
+                                </td>
+                                <td>
+                                    <span class="probability-badge {% if prediction[5] >= 70 %}probability-high{% elif prediction[5] >= 40 %}probability-medium{% else %}probability-low{% endif %}">
+                                        {{ "%.1f"|format(prediction[5]) }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="confidence-badge confidence-{{ prediction[6].lower().replace(' ', '-') if prediction[6] else 'low' }}">
+                                        {{ prediction[6] if prediction[6] else 'Low' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if prediction[4] == 1 %}
+                                        <span style="color: #16a34a; font-weight: 600;">
+                                            <i class="fas fa-check-circle"></i> Likely Admit
+                                        </span>
+                                    {% else %}
+                                        <span style="color: #dc2626; font-weight: 600;">
+                                            <i class="fas fa-times-circle"></i> Unlikely
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="no-data">
+                    <i class="fas fa-history"></i>
+                    <h3>No Prediction History</h3>
+                    <p>You haven't made any predictions yet. Start by using the prediction tool to see your results here.</p>
+                    <br>
+                    <a href="{{ url_for('student_dashboard') }}" class="btn-primary">
+                        <i class="fas fa-rocket"></i> Make Your First Prediction
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        const confidenceFilter = document.getElementById('confidenceFilter');
+        const probabilityFilter = document.getElementById('probabilityFilter');
+        const dateFilter = document.getElementById('dateFilter');
+        const tableBody = document.getElementById('historyTableBody');
+
+        function filterTable() {
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                let show = true;
+                
+                // Confidence filter
+                if (confidenceFilter.value && row.dataset.confidence !== confidenceFilter.value) {
+                    show = false;
+                }
+                
+                // Probability filter
+                if (probabilityFilter.value) {
+                    const probability = parseFloat(row.dataset.probability);
+                    if (probabilityFilter.value === 'high' && probability < 70) show = false;
+                    if (probabilityFilter.value === 'medium' && (probability < 40 || probability >= 70)) show = false;
+                    if (probabilityFilter.value === 'low' && probability >= 40) show = false;
+                }
+                
+                // Date filter
+                if (dateFilter.value && row.dataset.date) {
+                    const recordDate = new Date(row.dataset.date);
+                    const now = new Date();
+                    const daysDiff = (now - recordDate) / (1000 * 60 * 60 * 24);
+                    
+                    if (dateFilter.value === 'week' && daysDiff > 7) show = false;
+                    if (dateFilter.value === 'month' && daysDiff > 30) show = false;
+                    if (dateFilter.value === 'quarter' && daysDiff > 90) show = false;
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        confidenceFilter.addEventListener('change', filterTable);
+        probabilityFilter.addEventListener('change', filterTable);
+        dateFilter.addEventListener('change', filterTable);
+    </script>
+</body>
+</html> 

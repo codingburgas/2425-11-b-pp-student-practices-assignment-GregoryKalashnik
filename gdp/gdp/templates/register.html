@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AdmissionAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 700px;
+        }
+
+        .register-visual {
+            background: linear-gradient(135deg, #4ade80 0%, #06b6d4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-visual::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) rotate(180deg); }
+        }
+
+        .visual-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            position: relative;
+        }
+
+        .visual-content h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .visual-content p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .register-form {
+            padding: 32px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            color: #1e293b;
+        }
+
+        .logo i {
+            font-size: 2em;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .form-header {
+            margin-bottom: 24px;
+        }
+
+        .form-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9em;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px 14px 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4ade80;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        .form-group input:focus + .input-icon {
+            color: #4ade80;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 222, 128, 0.3);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #9ca3af;
+            font-size: 0.9em;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .login-link a {
+            color: #4ade80;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #22c55e;
+        }
+
+        .back-to-home {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            color: #64748b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            z-index: 1000;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-home:hover {
+            color: #4ade80;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .flash-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .flash-success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .register-visual {
+                display: none;
+            }
+
+            .register-form {
+                padding: 32px 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            body {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('landing') }}" class="back-to-home">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="register-container">
+        <div class="register-visual">
+            <div class="visual-content">
+                <h2>Join Thousands</h2>
+                <p>Start your journey to university success with AI-powered admission predictions and insights.</p>
+            </div>
+        </div>
+
+        <div class="register-form">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>AdmissionAI</span>
+            </div>
+
+            <div class="form-header">
+                <h1>Create Your Account</h1>
+                <p>Join our community of successful students</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <div class="input-container">
+                            <input type="text" id="first_name" name="first_name" required placeholder="John">
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <div class="input-container">
+                            <input type="text" id="last_name" name="last_name" required placeholder="Doe">
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-container">
+                        <input type="text" id="username" name="username" required placeholder="Choose a unique username">
+                        <i class="fas fa-at input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-container">
+                        <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-container">
+                        <input type="password" id="password" name="password" required placeholder="Create a strong password">
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a href="{{ url_for('login') }}">Sign in here</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

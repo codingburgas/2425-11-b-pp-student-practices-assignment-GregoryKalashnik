@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - AdmissionAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            color: #1a202c;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 32px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #1a202c;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            padding: 0 24px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #f8fafc;
+            color: #4ade80;
+            border-right: 3px solid #4ade80;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 232px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4ade80, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .user-info p {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1em;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .chart-header {
+            margin-bottom: 24px;
+        }
+
+        .chart-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .chart-header p {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .insights-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .insight-item {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 4px solid #4ade80;
+        }
+
+        .insight-item h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .insight-item p {
+            font-size: 0.85em;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            text-align: center;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .metric-icon.trend { background: linear-gradient(135deg, #4ade80, #22c55e); }
+        .metric-icon.average { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .metric-icon.improvement { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+        .metric-icon.goal { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-top: 16px;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 1024px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">AdmissionAI</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Main</div>
+                <a href="{{ url_for('student_dashboard') }}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('analytics') }}" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Account</div>
+                <a href="{{ url_for('profile') }}" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {% if user[4] and user[5] %}
+                        {{ user[4][0].upper() }}{{ user[5][0].upper() }}
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <div class="user-info">
+                    <h4>{{ user[4] }} {{ user[5] }}</h4>
+                    <p>{{ user[6].title() if user[6] else 'Student' }}</p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn" style="margin-left: 24px;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>📊 Analytics Dashboard</h1>
+                <p>Deep insights into your academic performance and prediction trends</p>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon trend">
+                        <i class="fas fa-trending-up"></i>
+                    </div>
+                    <div class="metric-value">{{ predictions|length }}</div>
+                    <div class="metric-label">Total Predictions</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon average">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="metric-value">
+                        {% if predictions %}
+                            {{ "%.1f"|format(predictions|map(attribute=5)|sum / predictions|length) }}%
+                        {% else %}
+                            0.0%
+                        {% endif %}
+                    </div>
+                    <div class="metric-label">Average Score</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon improvement">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="metric-value">
+                        {% if predictions|length >= 2 %}
+                            {% set latest = predictions[0][5] %}
+                            {% set previous = predictions[1][5] %}
+                            {% if latest > previous %}+{% endif %}{{ "%.1f"|format(latest - previous) }}%
+                        {% else %}
+                            --
+                        {% endif %}
+                    </div>
+                    <div class="metric-label">Recent Change</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon goal">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="metric-value">
+                        {% if predictions %}
+                            {{ predictions|selectattr('5', 'gt', 70)|list|length }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </div>
+                    <div class="metric-label">High Confidence</div>
+                </div>
+            </div>
+
+            <!-- Analytics Grid -->
+            <div class="analytics-grid">
+                <!-- Chart Section -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2>🎯 Prediction Trends</h2>
+                        <p>Your admission probability over time</p>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div style="text-align: center;">
+                            <i class="fas fa-chart-line" style="font-size: 2em; margin-bottom: 16px; color: #4ade80;"></i><br>
+                            Interactive charts coming soon<br>
+                            <small style="color: #94a3b8;">Line graph showing prediction history trends</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Section -->
+                <div class="insights-card">
+                    <div class="chart-header">
+                        <h2>💡 AI Insights</h2>
+                        <p>Personalized recommendations</p>
+                    </div>
+
+                    {% if predictions %}
+                        {% set latest_prediction = predictions[0] %}
+                        <div class="insight-item">
+                            <h4>📈 Performance Trend</h4>
+                            <p>
+                                {% if predictions|length >= 2 %}
+                                    {% set latest = predictions[0][5] %}
+                                    {% set previous = predictions[1][5] %}
+                                    {% if latest > previous %}
+                                        Your scores are improving! Keep up the great work.
+                                    {% elif latest == previous %}
+                                        Your performance is stable. Consider focusing on specific areas for improvement.
+                                    {% else %}
+                                        Your recent scores show room for improvement. Focus on strengthening your profile.
+                                    {% endif %}
+                                {% else %}
+                                    Build a prediction history to see trends and insights.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="insight-item">
+                            <h4>🎯 Current Standing</h4>
+                            <p>
+                                {% if latest_prediction[5] >= 80 %}
+                                    Excellent! You're in a strong position for admission.
+                                {% elif latest_prediction[5] >= 60 %}
+                                    Good position! Consider minor improvements to strengthen your application.
+                                {% elif latest_prediction[5] >= 40 %}
+                                    Moderate chances. Focus on improving your GPA or test scores.
+                                {% else %}
+                                    Work needed on core metrics to improve admission chances.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <div class="insight-item">
+                            <h4>📚 Recommendations</h4>
+                            <p>
+                                {% if user[7] and user[7] < 3.5 %}
+                                    Focus on improving your GPA through consistent study habits.
+                                {% elif user[8] and user[8] < 1200 %}
+                                    Consider test prep to boost your standardized test scores.
+                                {% else %}
+                                    Maintain your strong academic performance and consider extracurricular activities.
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="insight-item">
+                            <h4>🚀 Get Started</h4>
+                            <p>Run your first prediction to receive personalized insights and recommendations based on your academic profile.</p>
+                        </div>
+
+                        <div class="insight-item">
+                            <h4>📊 Track Progress</h4>
+                            <p>As you make more predictions, you'll see trends and improvements in your admission chances over time.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
